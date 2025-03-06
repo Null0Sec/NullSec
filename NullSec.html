@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NullSec</title>
+    <style>
+        body {
+            background-color: #111; /* Dark background */
+            color: #FF0000; /* Red color */
+            font-family: 'Courier New', monospace; /* Code-like font */
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 2px solid #FF0000;
+            padding-bottom: 10px;
+        }
+
+        .section {
+            margin: 15px;
+            font-size: 0.9em;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #FF0000;
+            padding-bottom: 5px;
+        }
+
+        .section p {
+            text-align: justify;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            background-color: #222;
+            color: #FF0000;
+            padding: 8px;
+            border: 1px dashed #FF0000;
+            font-size: 0.8em;
+        }
+
+        .divider {
+            border-top: 1px dashed #FF0000;
+            margin: 15px 0;
+        }
+
+        .link-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #FF0000;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1em;
+        }
+
+        .link-button:hover {
+            background-color: #cc0000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* تصميم نموذج البلاغ */
+        .form-container {
+            margin: 20px;
+            font-size: 1em;
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #FF0000;
+            background-color: #222;
+            color: #FF0000;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-container input[type="submit"] {
+            background-color: #FF0000;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .form-container input[type="submit"]:hover {
+            background-color: #cc0000;
+        }
+
+        .note {
+            background-color: #222;
+            color: #FF0000;
+            padding: 8px;
+            border: 1px dashed #FF0000;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الصفحة الأولى -->
+    <div id="homePage" class="section">
+        <div class="header">
+            ,NullSec
+        </div>
+
+        <div class="section">
+            <h2>Who We Are?</h2>
+            <p>NullSec is an underground group focused on exposing corrupt corporations. We use cyber operations to exploit vulnerabilities and bring these entities down.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <h2>Our Mission</h2>
+            <p>We aim to dismantle the corrupt and powerful. Through hacking, we expose secrets and bring down these systems from within.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+            <h2>Contact Us</h2>
+            <a href="#" class="link-button" onclick="showReportPage()">Submit a Report</a>
+        </div>
+
+        <div class="note">
+            Note: WE ARE HERE TO HELP YOU.
+        </div>
+    </div>
+
+    <!-- صفحة البلاغات (hidden initially) -->
+    <div id="reportPage" class="hidden">
+        <div class="header">
+            Report Corruption
+        </div>
+
+        <div class="form-container">
+            <h2>Your Report</h2>
+            <p>Submit your report below. All communication will be encrypted and confidential.</p>
+            <form id="reportForm">
+                <label for="details">Report Details:</label>
+                <textarea id="details" name="details" rows="5" placeholder="Enter details of the corrupt entity or event..." required></textarea>
+
+                <label for="contact">Optional Contact Information (Email/Phone):</label>
+                <input type="text" id="contact" name="contact" placeholder="Enter optional contact info (email/phone)">
+
+                <input type="submit" value="Submit Report">
+            </form>
+
+            <div class="note">
+                Your report will be sent securely and anonymously. Use the form below for sensitive information.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showReportPage() {
+            // Hide the home page
+            document.getElementById('homePage').classList.add('hidden');
+            // Show the report page
+            document.getElementById('reportPage').classList.remove('hidden');
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var details = document.getElementById('details').value;
+            var contact = document.getElementById('contact').value;
+
+            var payload = {
+                content: `New report:\n\nDetails: ${details}\nContact: ${contact || 'Anonymous'}`
+            };
+
+            // Webhook URL (replace with your Discord Webhook URL)
+            var webhookUrl = 'https://discord.com/api/webhooks/1347181305573408778/B-MpsPxkvfdvvY09YxujZd4MGj4tQP7Yt4-JoHDxSXTkHcDZNbwz7Xwzv6fhLpWxZ0rA';
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Report submitted successfully.');
+                } else {
+                    alert('Failed to submit report.');
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        });
+    </script>
+
+</body>
+</html>

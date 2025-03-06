@@ -119,7 +119,7 @@
     <!-- الصفحة الأولى -->
     <div id="homePage" class="section">
         <div class="header">
-            ,NullSec
+            NullSec
         </div>
 
         <div class="section">
@@ -172,43 +172,59 @@
     </div>
 
     <script>
+        var lastReportTime = 0; // متغير لتخزين الوقت الذي تم فيه إرسال البلاغ الأخير
+
         function showReportPage() {
-            // Hide the home page
             document.getElementById('homePage').classList.add('hidden');
-            // Show the report page
             document.getElementById('reportPage').classList.remove('hidden');
         }
 
         document.getElementById('reportForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
+            var currentTime = Date.now(); // الوقت الحالي بالميلي ثانية
+            if (currentTime - lastReportTime < 30000) { // إذا كان الوقت بين البلاغين أقل من 30 ثانية
+                alert('You must wait 30 seconds before submitting another report.');
+                return;
+            }
+
             var details = document.getElementById('details').value;
             var contact = document.getElementById('contact').value;
 
-            var payload = {
-                content: `New report:\n\nDetails: ${details}\nContact: ${contact || 'Anonymous'}`
-            };
+            // جلب عنوان الـ IP
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    var ipAddress = data.ip;
 
-            // Webhook URL (replace with your Discord Webhook URL)
-            var webhookUrl = 'https://discord.com/api/webhooks/1347181305573408778/B-MpsPxkvfdvvY09YxujZd4MGj4tQP7Yt4-JoHDxSXTkHcDZNbwz7Xwzv6fhLpWxZ0rA';
+                    var payload = {
+                        content: `New report:\n\nDetails: ${details}\nContact: ${contact || 'Anonymous'}\nIP: ${ipAddress}`
+                    };
 
-            fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Report submitted successfully.');
-                } else {
-                    alert('Failed to submit report.');
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error);
-            });
+                    var webhookUrl = 'https://discord.com/api/webhooks/your-webhook-url';
+
+                    fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            lastReportTime = currentTime; // تحديث وقت آخر بلاغ تم إرساله
+                            alert('Report submitted successfully.');
+                        } else {
+                            alert('Failed to submit report.');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error: ' + error);
+                    });
+                })
+                .catch(error => {
+                    alert('Error fetching IP address: ' + error);
+                });
         });
     </script>
 
